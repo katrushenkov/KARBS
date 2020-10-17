@@ -1,4 +1,4 @@
-# Luke's Auto-Rice Bootstraping Scripts (LARBS)
+# Katrushenkov's Auto-Rice Bootstraping Scripts (KARBS)
 
 
 ## Installation:
