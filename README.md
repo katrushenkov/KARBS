@@ -1,6 +1,6 @@
 # Katrushenkov's Auto-Rice Bootstraping Scripts (KARBS)
 
-This repo is based on Luke Smith's [LARBS](https://github.com/LukeSmithxyz/LARBS) blue_heart
+This repo is based on Luke Smith's [LARBS](https://github.com/LukeSmithxyz/LARBS) :blue_heart:
 
 ## Installation:
 
