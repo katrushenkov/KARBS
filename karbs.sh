@@ -234,6 +234,11 @@ EndSection' > /etc/X11/xorg.conf.d/40-libinput.conf
 grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth ||
 	echo "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" >> /etc/conf.d/fluidsynth
 
+# Install vim-plug and nvim plugins
+sudo -u "$name" sh -c "curl -fLo '/home/$name/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'"
+sudo -u "$name" nvim -c 'PlugInstall | qa' -e
+
 # Start/restart PulseAudio.
 killall pulseaudio; sudo -u "$name" pulseaudio --start
 
