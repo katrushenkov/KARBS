@@ -17,14 +17,14 @@ esac done
 
 [ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/katrushenkov/dotfiles.git"
 [ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/katrushenkov/KARBS/master/progs.csv"
-[ -z "$aurhelper" ] && aurhelper="paru"
+[ -z "$aurhelper" ] && aurhelper="yay"
 [ -z "$repobranch" ] && repobranch="master"
 
 ### FUNCTIONS ###
 
 installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
 
-error() { echo "ERROR: $1" ; exit 1;}
+error() { printf "%s\n" "$1" >&2; exit 1; }
 
 welcomemsg() { \
 	dialog --title "Welcome!" --msgbox "Welcome to Katrushenkov's Auto-Rice Bootstrapping Script!\\n\\nThis script will automatically install a fully-featured Linux desktop, which I use as my main machine.\\n\\n-Sergey Katrushenkov" 10 60
@@ -60,7 +60,7 @@ adduserandpass() { \
 	dialog --infobox "Adding user \"$name\"..." 4 50
 	useradd -m -g wheel -s /bin/zsh "$name" >/dev/null 2>&1 ||
 	usermod -a -G wheel "$name" && mkdir -p /home/"$name" && chown "$name":wheel /home/"$name"
-	repodir="/home/$name/.local/src"; mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
+	export repodir="/home/$name/.local/src"; mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
 	echo "$name:$pass1" | chpasswd
 	unset pass1 pass2 ;}
 
@@ -74,16 +74,15 @@ newperms() { # Set special sudoers settings for install (or after).
 	sed -i "/#LARBS/d" /etc/sudoers
 	echo "$* #LARBS" >> /etc/sudoers ;}
 
-manualinstall() { # Installs $1 manually if not installed. Used only for AUR helper here.
-	[ -f "/usr/bin/$1" ] || (
+manualinstall() { # Installs $1 manually. Used only for AUR helper here.
+	# Should be run after repodir is created and var is set.
 	dialog --infobox "Installing \"$1\", an AUR helper..." 4 50
-	cd /tmp || exit 1
-	rm -rf /tmp/"$1"*
-	curl -sO https://aur.archlinux.org/cgit/aur.git/snapshot/"$1".tar.gz &&
-	sudo -u "$name" tar -xvf "$1".tar.gz >/dev/null 2>&1 &&
-	cd "$1" &&
-	sudo -u "$name" makepkg --noconfirm -si >/dev/null 2>&1 || return 1
-	cd /tmp || return 1) ;}
+	sudo -u "$name" mkdir -p "$repodir/$1"
+	sudo -u "$name" git clone --depth 1 "https://aur.archlinux.org/$1.git" "$repodir/$1" >/dev/null 2>&1 ||
+		{ cd "$repodir/$1" || return 1 ; sudo -u "$name" git pull --force origin master;}
+	cd "$repodir/$1"
+	sudo -u "$name" -D "$repodir/$1" makepkg --noconfirm -si >/dev/null 2>&1 || return 1
+}
 
 maininstall() { # Installs all needed programs from main repo.
 	dialog --title "KARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 5 70
@@ -170,8 +169,8 @@ preinstallmsg || error "User exited."
 # Refresh Arch keyrings.
 refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-for x in curl base-devel git ntp zsh; do
-	dialog --title "KARBS Installation" --infobox "Installing \`x\` which is required to install and configure other programs." 5 70
+for x in curl ca-certificates base-devel git ntp zsh ; do
+	dialog --title "KARBS Installation" --infobox "Installing \`$x\` which is required to install and configure other programs." 5 70
 	installpkg "$x"
 done
 
@@ -186,14 +185,14 @@ adduserandpass || error "Error adding username and/or password."
 # in a fakeroot environment, this is required for all builds with AUR.
 newperms "%wheel ALL=(ALL) NOPASSWD: ALL"
 
-# Make pacman and paru colorful and adds eye candy on the progress bar because why not.
-grep -q "^Color" /etc/pacman.conf || sed -i "s/^#Color$/Color/" /etc/pacman.conf
+# Make pacman colorful, concurrent downloads and Pacman eye-candy.
 grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+sed -i "s/^#ParallelDownloads = 8$/ParallelDownloads = 5/;s/^#Color$/Color/" /etc/pacman.conf
 
 # Use all cores for compilation.
 sed -i "s/-j2/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
 
-manualinstall $aurhelper || error "Failed to install AUR helper."
+manualinstall yay-bin || error "Failed to install AUR helper."
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
@@ -245,7 +244,7 @@ sudo -u "$name" sh -c "curl -fLo '/home/$name/.local/share/nvim/site/autoload/pl
 sudo -u "$name" nvim -c 'PlugInstall | qa' -e
 
 # Start/restart PulseAudio.
-killall pulseaudio; sudo -u "$name" pulseaudio --start
+pkill -15 -x 'pulseaudio'; sudo -u "$name" pulseaudio --start
 
 # This line, overwriting the `newperms` command above will allow the user to run
 # serveral important commands, `shutdown`, `reboot`, updating, etc. without a password.
