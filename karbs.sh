@@ -78,7 +78,7 @@ refreshkeys() { \
 			dialog --infobox "Enabling Arch Repositories..." 4 40
 			pacman --noconfirm --needed -S artix-keyring artix-archlinux-support >/dev/null 2>&1
 			for repo in extra community; do
-				grep -q "^[$repo]" /etc/pacman.conf ||
+				grep -q "^\[$repo\]" /etc/pacman.conf ||
 					echo "[$repo]
 	Include = /etc/pacman.d/mirrorlist-arch" >> /etc/pacman.conf
 			done
@@ -203,6 +203,7 @@ newperms "%wheel ALL=(ALL) NOPASSWD: ALL"
 
 # Make pacman colorful, concurrent downloads and Pacman eye-candy.
 grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+# Enable parallel downloads for pacman
 sed -i "s/^#ParallelDownloads = 8$/ParallelDownloads = 5/;s/^#Color$/Color/" /etc/pacman.conf
 
 # Use all cores for compilation.
