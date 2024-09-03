@@ -47,7 +47,7 @@ The second column is the name of the program in the repository, or the link to
 the git repository, and the third comment is a description (should be a verb
 phrase) that describes the program. During installation, KARBS will print out
 this information in a grammatical sentence. It also doubles as documentation
-for people who read the csv or who want to install my dotfiles manually.
+for people who read the CSV and want to install my dotfiles manually.
 
 Depending on your own build, you may want to tactically order the programs in
 your programs file. KARBS will install from the top to the bottom.
