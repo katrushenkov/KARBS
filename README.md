@@ -6,8 +6,8 @@ This repo is based on Luke Smith's [LARBS](https://github.com/LukeSmithxyz/LARBS
 
 On an Arch based distribution as root, run the following:
 
-```
-curl -LO https://github.com/katrushenkov/KARBS/karbs.sh
+```sh
+curl -LO https://raw.githubusercontent.com/katrushenkov/KARBS/master/karbs.sh
 sh karbs.sh
 ```
 
