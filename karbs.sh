@@ -285,16 +285,15 @@ EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
 # All this below to get Librewolf installed with add-ons and non-bad settings.
 
-whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
-
-browserdir="/home/$name/.librewolf"
-profilesini="$browserdir/profiles.ini"
+# whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
+# browserdir="/home/$name/.librewolf"
+# profilesini="$browserdir/profiles.ini"
 
 # Start librewolf headless so it generates a profile. Then get that profile in a variable.
-sudo -u "$name" librewolf --headless >/dev/null 2>&1 &
-sleep 1
-profile="$(sed -n "/Default=.*.default-default/ s/.*=//p" "$profilesini")"
-pdir="$browserdir/$profile"
+#sudo -u "$name" librewolf --headless >/dev/null 2>&1 &
+#sleep 1
+#profile="$(sed -n "/Default=.*.default-default/ s/.*=//p" "$profilesini")"
+#pdir="$browserdir/$profile"
 
 #[ -d "$pdir" ] && makeuserjs
 
