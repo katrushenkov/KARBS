@@ -7,7 +7,7 @@
 ### OPTIONS AND VARIABLES ###
 
 pacman -S --noconfirm wget dialog
-wget -q -O chaotic-AUR-installer.bash https://raw.githubusercontent.com/SharafatKarim/chaotic-AUR-installer/main/install.bash && sudo bash chaotic-AUR-installer.bash && rm chaotic-AUR-installer.bash
+wget -q -O chaotic-AUR-installer.bash https://raw.githubusercontent.com/katrushenkov/chaotic-AUR-installer/main/install.bash && sudo bash chaotic-AUR-installer.bash && rm chaotic-AUR-installer.bash
 
 
 dotfilesrepo="https://github.com/katrushenkov/dotfiles.git"
