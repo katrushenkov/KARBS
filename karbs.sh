@@ -253,6 +253,7 @@ manualinstall $aurhelper || error "Failed to install AUR helper."
 # Make sure .*-git AUR packages get updated automatically.
 $aurhelper -Y --save --devel
 
+[ -d /home/$name/.config/nvim ] && rm -rf "/home/$name/.config/nvim"
 git clone --depth 1 https://github.com/AstroNvim/template "/home/$name/.config/nvim"
 rm -rf "/home/$name/.config/nvim/.git"
 
