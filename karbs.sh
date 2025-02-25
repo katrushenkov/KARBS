@@ -221,7 +221,7 @@ preinstallmsg || error "User exited."
 refreshkeys ||
 	error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-for x in curl ca-certificates base-devel git ntp zsh dash; do
+for x in curl ca-certificates base-devel git ntp zsh dash cmake; do
 	whiptail --title "KARBS Installation" \
 		--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
 	installpkg "$x"
@@ -254,8 +254,9 @@ manualinstall $aurhelper || error "Failed to install AUR helper."
 $aurhelper -Y --save --devel
 
 [ -d /home/$name/.config/nvim ] && rm -rf "/home/$name/.config/nvim"
-git clone --depth 1 https://github.com/AstroNvim/template "/home/$name/.config/nvim"
+sudo -u $name git clone --depth 1 https://github.com/AstroNvim/template "/home/$name/.config/nvim"
 rm -rf "/home/$name/.config/nvim/.git"
+sudo -u $name "$name" mkdir -p "/home/$name/.config/nvim/templates/norg"
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
@@ -267,7 +268,7 @@ installationloop
 # other unnecessary files.
 putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
 rm -rf "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
-mv -f "/home/$name/.git/" "/home/$name/.local/src/dotfiles.git"
+mv -f "/home/$name/.git/" "/home/$name/.local/src/dotfiles"
 
 # Most important command! Get rid of the beep!
 rmmod pcspkr
