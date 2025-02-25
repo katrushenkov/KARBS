@@ -253,6 +253,9 @@ manualinstall $aurhelper || error "Failed to install AUR helper."
 # Make sure .*-git AUR packages get updated automatically.
 $aurhelper -Y --save --devel
 
+git clone --depth 1 https://github.com/AstroNvim/template "/home/$name/.config/nvim"
+rm -rf "/home/$name/.config/nvim/.git"
+
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
 # the user has been created and has priviledges to run sudo without a password
@@ -316,6 +319,8 @@ echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/
 echo "Defaults editor=/usr/bin/nvim" >/etc/sudoers.d/02-larbs-visudo-editor
 mkdir -p /etc/sysctl.d
 echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
+
+sudo -u "$name" mkdir -p /home/"$name"/.cache/nnn/bookmarks 
 
 # Cleanup
 rm -f /etc/sudoers.d/larbs-temp
