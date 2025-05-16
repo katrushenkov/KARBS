@@ -9,24 +9,25 @@
 pacman -S --noconfirm wget dialog
 
 pacman -Sy --needed archlinux-keyring && pacman -Su
+pacman-key --populate archlinux
 
-echo 'recv-key'
-sleep 1
+bash <(curl -s "https://raw.githubusercontent.com/SharafatKarim/chaotic-AUR-installer/main/install.bash")
+
+#echo 'recv-key'
+#sleep 1
 #pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-gpg --recv-keys --keyserver hkps://keyserver.ubuntu.com 3056513887B78AEB
-sleep 1
-echo "lsign-key"
+#sleep 1
+#echo "lsign-key"
 #pacman-key --lsign-key 3056513887B78AEB
-gpg --lsign-key 3056513887B78AEB
-sleep 1
-echo 'pacman -U 1'
-pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
-echo 'pacman -U 2'
-pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
-echo -e "#Chaotic-AUR" >> /etc/pacman.conf
-echo -e "" >> /etc/pacman.conf
-echo -e "[chaotic-aur]" >> /etc/pacman.conf
-echo -e "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
+#sleep 1
+#echo 'pacman -U 1'
+#pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+#echo 'pacman -U 2'
+#pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+#echo -e "#Chaotic-AUR" >> /etc/pacman.conf
+#echo -e "" >> /etc/pacman.conf
+#echo -e "[chaotic-aur]" >> /etc/pacman.conf
+#echo -e "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 
 #wget -q -O chaotic-AUR-installer.bash https://raw.githubusercontent.com/katrushenkov/chaotic-AUR-installer/main/install.bash && sudo bash chaotic-AUR-installer.bash && rm chaotic-AUR-installer.bash
 
@@ -122,14 +123,15 @@ Include = /etc/pacman.d/mirrorlist-arch" >>/etc/pacman.conf
 manualinstall() {
 	# Installs $1 manually. Used only for AUR helper here.
 	# Should be run after repodir is created and var is set.
-	pacman -Qq "$1" && return 0
+	pacman -Qq "$1" > /dev/null && return 0
 	whiptail --infobox "Installing \"$1\" manually." 7 50
 	sudo -u "$name" mkdir -p "$repodir/$1"
+	sudo -u "$name" git config --global init.defaultBranch main # supress f*cking warning
 	sudo -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
 		--no-tags -q "https://aur.archlinux.org/$1.git" "$repodir/$1" ||
 		{
 			cd "$repodir/$1" || return 1
-			sudo -u "$name" git pull --force origin main
+			sudo -u "$name" git pull --force origin master
 		}
 	cd "$repodir/$1" || exit 1
 	sudo -u "$name" \
@@ -211,7 +213,7 @@ systembeepoff() { dialog --infobox "Getting rid of that retarded error beep soun
 
 finalize(){ \
 	dialog --infobox "Preparing welcome message..." 4 50
-	dialog --title "All done!" --msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Sergey Katrushenkov" 12 80
+	dialog --title "All done!" --msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place. Now, reboot and log in as user" 12 80
 	}
 
 ### THE ACTUAL SCRIPT ###
@@ -275,7 +277,8 @@ $aurhelper -Y --save --devel
 [ -d /home/$name/.config/nvim ] && rm -rf "/home/$name/.config/nvim"
 sudo -u $name git clone --depth 1 https://github.com/AstroNvim/template "/home/$name/.config/nvim"
 rm -rf "/home/$name/.config/nvim/.git"
-sudo -u $name "$name" mkdir -p "/home/$name/.config/nvim/templates/norg"
+sudo -u $name mkdir -p "/home/$name/.config/nvim/templates/norg"
+
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
@@ -298,19 +301,6 @@ chsh -s /bin/zsh "$name" >/dev/null 2>&1
 sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
 # Make dash the default #!/bin/sh symlink.
 ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
-
-# dbus UUID must be generated for Artix runit.
-dbus-uuidgen >/var/lib/dbus/machine-id
-
-# Enable tap to click
-[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
-        Identifier "libinput touchpad catchall"
-        MatchIsTouchpad "on"
-        MatchDevicePath "/dev/input/event*"
-        Driver "libinput"
-	# Enable left mouse button by tapping
-	Option "Tapping" "on"
-EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
 # All this below to get Librewolf installed with add-ons and non-bad settings.
 
@@ -341,7 +331,13 @@ echo "Defaults editor=/usr/bin/nvim" >/etc/sudoers.d/02-larbs-visudo-editor
 mkdir -p /etc/sysctl.d
 echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
 
+echo "Defaults lecture = never" > /etc/sudoers.d/privacy
+
 sudo -u "$name" mkdir -p /home/"$name"/.cache/nnn/bookmarks 
+
+sudo -u $name /usr/bin/nvim --headless "+AstroUpdate" +qa
+
+ln -s /usr/lib/libhyprutils.so.0.7.1 /usr/lib/libhyprutils.so.5
 
 # Cleanup
 rm -f /etc/sudoers.d/larbs-temp
