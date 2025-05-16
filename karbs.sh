@@ -12,10 +12,12 @@ pacman -Sy --needed archlinux-keyring && pacman -Su
 
 echo 'recv-key'
 sleep 1
-pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+#pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+gpg --recv-keys --keyserver hkps://keyserver.ubuntu.com 3056513887B78AEB
 sleep 1
 echo "lsign-key"
-pacman-key --lsign-key 3056513887B78AEB
+#pacman-key --lsign-key 3056513887B78AEB
+gpg --lsign-key 3056513887B78AEB
 sleep 1
 echo 'pacman -U 1'
 pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
