@@ -8,14 +8,14 @@
 
 pacman -S --noconfirm wget dialog
 
-sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-sudo pacman-key --lsign-key 3056513887B78AEB
-sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
-sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
-sudo echo -e "#Chaotic-AUR" >> /etc/pacman.conf
-sudo echo -e "" >> /etc/pacman.conf
-sudo echo -e "[chaotic-aur]" >> /etc/pacman.conf
-sudo echo -e "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
+pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key 3056513887B78AEB
+pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+echo -e "#Chaotic-AUR" >> /etc/pacman.conf
+echo -e "" >> /etc/pacman.conf
+echo -e "[chaotic-aur]" >> /etc/pacman.conf
+echo -e "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 
 #wget -q -O chaotic-AUR-installer.bash https://raw.githubusercontent.com/katrushenkov/chaotic-AUR-installer/main/install.bash && sudo bash chaotic-AUR-installer.bash && rm chaotic-AUR-installer.bash
 
