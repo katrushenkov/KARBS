@@ -8,9 +8,15 @@
 
 pacman -S --noconfirm wget dialog
 
+echo "recv-key"
 pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+sleep 1
+echo "lsign-key"
 pacman-key --lsign-key 3056513887B78AEB
+sleep 1
+echo 'pacman -U 1'
 pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+echo 'pacman -U 2'
 pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 echo -e "#Chaotic-AUR" >> /etc/pacman.conf
 echo -e "" >> /etc/pacman.conf
