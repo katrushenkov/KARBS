@@ -8,7 +8,10 @@
 
 pacman -S --noconfirm wget dialog
 
-echo "recv-key"
+pacman -Sy --needed archlinux-keyring && pacman -Su
+
+echo 'recv-key'
+sleep 1
 pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 sleep 1
 echo "lsign-key"
@@ -24,7 +27,6 @@ echo -e "[chaotic-aur]" >> /etc/pacman.conf
 echo -e "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 
 #wget -q -O chaotic-AUR-installer.bash https://raw.githubusercontent.com/katrushenkov/chaotic-AUR-installer/main/install.bash && sudo bash chaotic-AUR-installer.bash && rm chaotic-AUR-installer.bash
-
 
 dotfilesrepo="https://github.com/katrushenkov/dotfiles.git"
 progsfile="https://raw.githubusercontent.com/katrushenkov/KARBS/master/progs.csv"
