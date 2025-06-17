@@ -279,12 +279,14 @@ sudo -u $name git clone --depth 1 https://github.com/AstroNvim/template "/home/$
 rm -rf "/home/$name/.config/nvim/.git"
 sudo -u $name mkdir -p "/home/$name/.config/nvim/templates/norg"
 
-
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
 # the user has been created and has priviledges to run sudo without a password
 # and all build dependencies are installed.
 installationloop
+
+# install plugins for nnn file manager
+sudo -u "$name" sh -c "$(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)"
 
 # Install the dotfiles in the user's home directory, but remove .git dir and
 # other unnecessary files.
@@ -334,6 +336,7 @@ echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
 echo "Defaults lecture = never" > /etc/sudoers.d/privacy
 
 sudo -u "$name" mkdir -p /home/"$name"/.cache/nnn/bookmarks 
+
 
 sudo -u $name /usr/bin/nvim --headless "+AstroUpdate" +qa
 
