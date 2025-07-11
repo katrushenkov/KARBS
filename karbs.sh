@@ -11,7 +11,7 @@ pacman -S --noconfirm wget dialog
 pacman -Sy --needed archlinux-keyring && pacman -Su
 pacman-key --populate archlinux
 
-bash <(curl -s "https://raw.githubusercontent.com/SharafatKarim/chaotic-AUR-installer/main/install.bash")
+bash <(curl -s "https://raw.githubusercontent.com/katrushenkov/chaotic-AUR-installer/main/install.bash")
 
 #echo 'recv-key'
 #sleep 1
