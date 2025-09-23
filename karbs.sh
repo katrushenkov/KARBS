@@ -320,10 +320,13 @@ echo "Defaults lecture = never" > /etc/sudoers.d/privacy
 
 sudo -u "$name" mkdir -p /home/"$name"/.cache/nnn/bookmarks 
 
-
 sudo -u $name /usr/bin/nvim --headless "+AstroUpdate" +qa
 
-ln -s /usr/lib/libhyprutils.so.0.7.1 /usr/lib/libhyprutils.so.5
+# setup ydotoold
+sudo -u $name touch /run/user/1000/.ydotool_socket
+sudo -u $name chown $name:$name /run/user/1000/.ydotool_socket
+sudo -u $name chmod 600 /run/user/1000/.ydotool_socket
+sudo -u $name systemctl --user enable --now ydotool.service
 
 # Cleanup
 rm -f /etc/sudoers.d/larbs-temp
