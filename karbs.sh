@@ -277,6 +277,9 @@ putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
 rm -rf "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
 mv -f "/home/$name/.git/" "/home/$name/.local/src/dotfiles"
 
+# setup bm-dir and bm-files aliases
+sudo -u "$name" /home/$name/.local/bin/shortcuts
+
 # Most important command! Get rid of the beep!
 rmmod pcspkr
 echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
