@@ -336,3 +336,4 @@ rm -f /etc/sudoers.d/larbs-temp
 
 # Last message! Install complete!
 finalize
+clear
