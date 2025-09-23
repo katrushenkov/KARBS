@@ -18,7 +18,7 @@ That's it.
 KARBS is a script that autoinstalls and autoconfigures a fully-functioning
 and minimal terminal-and-vim-based Arch Linux environment.
 
-LARBS can be run on a fresh install of Arch or Artix Linux, and provides you
+KARBS can be run on a fresh install of Arch or Artix Linux, and provides you
 with a fully configured diving-board for work or more customization.
 
 ## Customization
